@@ -1,5 +1,6 @@
 package com.zjm.service.impl;
 
+import com.zjm.config.JedisUtil;
 import com.zjm.service.UserService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +17,10 @@ import redis.clients.jedis.JedisPool;
 public class UserServiceImpl implements UserService {
 
     @Autowired
-    private JedisPool jedisPool;  //JedisPool jedis连接池
+    //JedisPool jedis连接池
+    private JedisPool jedisPool;
+    @Autowired
+    private JedisUtil jedisUtil;
 
     /**
      * Redis有什么命令，Jedis就有什么方法
@@ -43,5 +47,21 @@ public class UserServiceImpl implements UserService {
         //3.关闭连接
         jedis.close();
         return val;
+    }
+    /**
+     * 测试String类型
+     * 需求：用户输入一个redis数据，该key的有效期为28小时
+     */
+    @Override
+    public void expireStr(String key, String value){
+        Jedis jedis = jedisUtil.getJedis();
+        //key默认永久有效
+        jedis.set(key, value);
+        //28小时？
+        long diff=jedisUtil.caclTimeHour(28);
+        jedis.expire(key, (int) diff);
+        log.info(key+"\t设置值:"+value+"\t"+"ttl:"+diff);
+
+        jedisUtil.close(jedis);
     }
 }

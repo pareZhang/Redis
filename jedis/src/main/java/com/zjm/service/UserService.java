@@ -11,4 +11,10 @@ public interface UserService {
      * 将结果赋值给Redis，并返回
      */
     public String getString(String key);
+
+    /**
+     * 测试String类型
+     * 需求：用户输入一个redis数据，该key的有效期为28小时
+     */
+    public void expireStr(String key,String value);
 }

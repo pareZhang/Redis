@@ -27,6 +27,12 @@ public class JedisApplicationTests {
 		String result=userService.getString("name");
 		System.out.println(result);
 	}
+	@Test
+	public void t2(){
+		String key="testKey";
+		String value="测试数据";
+		userService.expireStr(key,value);
+	}
 
 
 }
