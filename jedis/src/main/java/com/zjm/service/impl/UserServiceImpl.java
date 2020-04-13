@@ -1,12 +1,16 @@
 package com.zjm.service.impl;
 
 import com.zjm.config.JedisUtil;
+import com.zjm.po.User;
 import com.zjm.service.UserService;
 import lombok.extern.java.Log;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 import redis.clients.jedis.Jedis;
 import redis.clients.jedis.JedisPool;
+
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * @Author pareZhang
@@ -22,6 +26,7 @@ public class UserServiceImpl implements UserService {
     @Autowired
     private JedisUtil jedisUtil;
 
+    //TODO  String类型的演示
     /**
      * Redis有什么命令，Jedis就有什么方法
      * Redis 的 String类型
@@ -63,5 +68,49 @@ public class UserServiceImpl implements UserService {
         log.info(key+"\t设置值:"+value+"\t"+"ttl:"+diff);
 
         jedisUtil.close(jedis);
+    }
+
+    /**
+     * TODO Hash类型演示
+     * 存一个对象
+     * 需求分析：根据用户的ID查询用户信息
+     * 用户在前端传入一个ID编号，根据用户的ID查询用户的对象信息
+     * 先判断如果redis中存在，直接返回，如果redis中不存在，查询MySQL，并将查询到的结果赋值给redis，并返回
+     */
+    @Override
+    public User selectById(String id){
+        //实体类名：id
+        String key="user:"+id;
+        User user=new User();
+        //1.得到jedis对象
+        Jedis jedis = jedisUtil.getJedis();
+        //2.实现业务逻辑判断
+        if (jedis.exists(key)){
+            //存在
+            log.info("--------->查询的是Redis的数据");
+           Map<String,String> map= jedis.hgetAll(key);
+           user.setId(map.get("id"));
+           user.setAge(Integer.parseInt(map.get("age")));
+           user.setName(map.get("name"));
+
+        }else {
+            //不存在
+            //new一个对象，模拟从MySQL中查出的数据
+            user.setId(id);
+            user.setAge(25);
+            user.setName("周杰伦");
+            log.info("--------->查询的是MYSQL中的数据"+user);
+            //存入redis
+            Map<String,String> map=new HashMap<>();
+            map.put("id",user.getId());
+            map.put("age",user.getAge()+"");
+            map.put("name",user.getName());
+            jedis.hmset(key,map);
+            log.info("------->往redis中进行存");
+        }
+
+        //3.关闭jedis连接
+        jedisUtil.close(jedis);
+        return user;
     }
 }

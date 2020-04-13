@@ -1,5 +1,7 @@
 package com.zjm.service;
 
+import com.zjm.po.User;
+
 /**
  * @Author pareZhang
  * @Date 2020/4/8 13:06
@@ -17,4 +19,11 @@ public interface UserService {
      * 需求：用户输入一个redis数据，该key的有效期为28小时
      */
     public void expireStr(String key,String value);
+
+    /**
+     * Redis 的 Hash类型
+     * @param id
+     * @return
+     */
+    public User selectById(String id);
 }
