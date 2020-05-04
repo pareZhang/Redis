@@ -2,7 +2,6 @@ package com.zjm.service.impl;
 
 import com.zjm.po.User;
 import com.zjm.service.UserService;
-import com.zjm.utils.KeyNameUtil;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.redis.core.HashOperations;
