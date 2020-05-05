@@ -194,7 +194,7 @@ public interface ListCacheService {
     /**
      * 除集合中右边的元素，同时在左边加入一个元素。
      * @param key 键
-     * @param str 加入的元素
+     * @param key1 加入的元素
      * @return  返回右边的元素
      */
     Object rightPopAndLeftPush(String key,String key1);
@@ -202,7 +202,7 @@ public interface ListCacheService {
     /**
      * 移除集合中右边的元素在等待的时间里，同时在左边添加元素，如果超过等待的时间仍没有元素则退出。
      * @param key 键
-     * @param str 值
+     * @param key1 值
      * @param timeout 超时时间
      * @return 返回移除右边的元素
      */
